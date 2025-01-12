@@ -869,6 +869,14 @@ namespace dxvk {
         cHud            = m_hud,
         cFrameId        = m_wctx->frameId
       ] (DxvkContext* ctx) {
+        // Update back buffer color space as necessary
+        if (cSrcView->image()->info().colorSpace != cColorSpace) {
+          DxvkImageUsageInfo usage = { };
+          usage.colorSpace = cColorSpace;
+
+          ctx->ensureImageCompatibility(cSrcView->image(), usage);
+        }
+
         // Blit back buffer onto Vulkan swap chain
         auto contextObjects = ctx->beginExternalRendering();
 
